@@ -1,14 +1,43 @@
 import { Button, Stack, TextField, Typography } from "@mui/material";
-import { UseMutationResult } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
-import { ListStateType, createNoteType } from "../home/homeType";
+
+import { createNoteType } from "../home/homeType";
 import { useContext } from "react";
 import { CreateHomeContext } from "../home/HomeRouter";
+
+import { useFormik } from 'formik';
+import InputField from "../common/InputField";
 export type textfield = {
   title: string;
   category: string;
   content: string;
 };
+const data = [{
+  name:"title",
+  label:"Title",
+  type:"text",
+  multiline:false,
+  rows:1,
+  
+},
+{
+  name:"category",
+  label:"Category",
+  type:"text",
+  multiline:false,
+  rows:1,
+  
+},
+{
+  name:"content",
+  label:"Content",
+  type:"text",
+  multiline:true,
+  rows:4,
+  
+}
+]
+
+
 const CreateNote = () => {
   const { todos,
     setTodos,
@@ -25,65 +54,42 @@ const CreateNote = () => {
         [event.target.name]: event.target.value,
       });
   };
-  const clickHandler = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    event.preventDefault();
-    if (
-      !createFields?.category ||
-      !createFields?.content ||
-      !createFields?.title
-    )
-      return;
-    if (createFields?.edit) {
-      editMutate?.mutate(createFields);
-    } else {
-      mutate?.mutate(createFields);
-    }
-  };
+  // For handling input Data
+  const formik = useFormik({
+    initialValues: {
+      title: createFields?.title ?? '',
+      category: createFields?.category ?? '',
+      content: createFields?.content ?? '',
+      id: createFields?.id ?? '',
+      edit: createFields?.edit ?? '',
+    },
+    onSubmit: values => {
+      if (values?.edit) {
+        editMutate?.mutate(values);
+      } else {
+        mutate?.mutate(values);
+      }
+    },
+  });
+  
   return (
     <Stack gap={3}>
       <Typography variant="h3">Type Anything!</Typography>
-      <TextField
-      label={"Title"}
-      variant="filled"
-        value={createFields?.title}
-        name={"title"}
-        placeholder={"Enter Title"}
-        onChange={(event) => {
-          onChangeHandler(event);
-        }}
-      />
-      <TextField
-      label={"Category"}
-      variant="filled"
-        value={createFields?.category}
-        name={"category"}
-        placeholder={"Enter Category"}
-        onChange={(event) => {
-          onChangeHandler(event);
-        }}
-      />
-      <TextField
-      label={"Content"}
-      variant="filled"
-        value={createFields?.content}
-        name={"content"}
-        placeholder={"Enter content"}
-        onChange={(event) => {
-          onChangeHandler(event);
-        }}
-        multiline
-        rows={4}
-      />
-      <Button
-        sx={{}}
-        disabled={mutate?.isLoading}
-        onClick={(e) => clickHandler(e)}
-        variant={"contained"}
-      >
-        Create!
-      </Button>
+      <form onSubmit={formik.handleSubmit}>
+        <Stack gap={2} py={1}>
+          {data.map(formelm=>(
+            <InputField formelm={formelm} formik={formik}/>
+          ))}
+        </Stack>
+        <Button
+          sx={{}}
+          disabled={mutate?.isLoading}
+          type="submit"
+          variant={"contained"}
+        >
+          Create!
+        </Button>
+      </form>
     </Stack>
   );
 };
