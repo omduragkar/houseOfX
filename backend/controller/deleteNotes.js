@@ -10,6 +10,7 @@ module.exports.updateNotes = async (req, res)=>{
             if(deleteNote){
                 res.json({
                     "message":"Note Removed!",
+                    id:note._id
                 });
             }else{
                 

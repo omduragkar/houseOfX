@@ -2,12 +2,17 @@ import { Stack, Typography } from '@mui/material'
 import ListAccordian from './SingleRead'
 import { useMutation } from '@tanstack/react-query'
 import { delTodo } from '../../queryFunctions/deleteTodo'
-import { ListStateType } from './homeType'
+import { ListStateType, liststateType } from './homeType'
+import { useContext } from 'react'
+import { CreateHomeContext } from './HomeRouter'
 
-const ListState = ({queries, todos, setTodos, setCreateFields,setOpen}:ListStateType) => {
+const ListState = () => {
+  const { todos, setTodos, setCreateFields,setOpen}:liststateType = useContext(CreateHomeContext);
   const delMutate = useMutation(delTodo, {
     onSuccess:(data)=>{
       console.log({data})
+      let newtodo: never[] = todos.filter(todo=>todo._id != data?.data?.id);
+      setTodos(newtodo);
     }
   })
   const deleteFunctionality = (id:any)=>{
@@ -15,8 +20,7 @@ const ListState = ({queries, todos, setTodos, setCreateFields,setOpen}:ListState
       delMutate.mutate({
         id
       })
-      let newtodo = todos.filter(todo=>todo._id != id);
-      setTodos(newtodo);
+      
     }
   }
   const updateFunctionality = (data:any)=>{

@@ -198,6 +198,9 @@ export const themeSettings = () => {
           
         ],
       },
+      MuiAccordion:{
+
+      },
       MuiTextField: {
         variants: [
           {

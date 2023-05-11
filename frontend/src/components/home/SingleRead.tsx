@@ -22,14 +22,14 @@ export default function ListAccordian({todo, deleteFunctionality, updateFunction
         id="panel1a-header"
         sx={{w:"100%"}}
       >
-          <Typography>{todo.title}</Typography>
+          <Typography variant='h4' color={theme=>theme.palette.primary.dark}>{String(todo.title).toUpperCase()}</Typography>
       </AccordionSummary>
       <AccordionDetails>
           <Stack direction={"row"} justifyContent={"flex-end"} gap={3}>
             <IconButton onClick={()=>{updateFunctionality(todo)}}><ModeEditIcon/> </IconButton>
             <IconButton onClick={()=>deleteFunctionality(todo._id)}><DeleteIcon/></IconButton>
           </Stack>
-        <Typography>
+        <Typography variant={"h6"}>
           {todo.content}
         </Typography>
       </AccordionDetails>
